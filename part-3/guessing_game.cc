@@ -1,6 +1,22 @@
+// Raxel Ortiz
+// CPSC 120-05
+// 2021-03-18
+// raxelortiz7@csu.fullerton.edu
+// @raxelortiz7
+//
+// Lab 06-03
+//
+// This program is a guessing game!
+//
 
-// TODO: Add the following header files algorithm, array, cstdlib,
+// Add the following header files algorithm, array, cstdlib,
 // iostream, random
+#include <algorithm>
+#include <array>
+#include <cstdlib>
+#include <iostream>
+#include <random> 
+#include <ostream>
 
 using namespace std;
 
@@ -89,7 +105,8 @@ void NewGameMessage(int minimum_number, int maximum_number) {
 /// \param message The programmer defined string that specifies the current
 /// error.
 void ErrorMessage(const string& message) {
-  // TODO: implement ErrorMessage
+  // implement ErrorMessage
+  cout << message << "\n";
 }
 
 /// GatherGuess prompts the user for a guess, gathers the guess as a string,
@@ -103,7 +120,18 @@ void ErrorMessage(const string& message) {
 ///
 /// \returns An integer representing the guess the player typed in
 int GatherGuess() {
-  // TODO: implement GatherGuess()
+  // implement GatherGuess()
+  string user_guess = "";
+  cout << "What's your guess? ";
+  cin >> user_guess;
+  int user;
+try{
+   user = stoi(user_guess);
+}catch(const exception& e){
+  ErrorMessage("Problem getting guess number");
+  exit(1);
+  }
+  return user;
 }
 
 /// WrongGuessMessage prints a random message to the terminal to let the
@@ -124,7 +152,10 @@ int GatherGuess() {
 /// \param message_id The index of the message to be selected from the
 /// array responses.
 void WrongGuessMessage(int message_id) {
-  // TODO: Implement WrongGuessMessage() 
+  // Implement WrongGuessMessage() 
+  array<string, 4> responses = {"\tNope - that's not it.\n", "\tSorry Charlie.\n",
+      "\tWrong number - try again.\n", "\tYou can do this - guess again.\n"};
+  cout << responses.at(message_id); 
 }
 
 /// WarmerOrColder will take the player's \p guess, the player's \p last_guess
@@ -151,7 +182,18 @@ void WrongGuessMessage(int message_id) {
 /// saved in the main function such that there is a current guess variable
 /// and a last guess variable.
 void WarmerOrColder(int guess, int last_guess, int secret_number) {
-  // TODO: Implement WarmerOrColder()
+  // Implement WarmerOrColder()
+  int previouse_distance = abs(secret_number - last_guess);
+  int curent_distance = abs(secret_number - guess);
+  RandomNumberGenerator meassage(0,3);
+  int mecha = meassage.next();
+if(curent_distance < previouse_distance){
+  WrongGuessMessage(mecha);
+  cout << "\tYou're getting warmer\n";
+  } else if (previouse_distance > curent_distance){
+  WrongGuessMessage(mecha);
+  cout << "\tYou're getting colder\n";
+  } 
 }
 
 /// Entry point to the mind_reader program
@@ -169,23 +211,50 @@ int main(int argc, char* argv[]) {
   int minimum_number = 0;
   int maximum_number = 0;
 
-  // TODO: convert argv_one_minimum and argv_two_maximum to integers and
+  // convert argv_one_minimum and argv_two_maximum to integers and
   // assign to minimum_number and maximum_number.
-
-  // TODO: Check to make sure minimum_number is less than maximum_number,
+try{
+  minimum_number = stoi(argv_one_minimum);
+}catch(const exception& e){
+  ErrorMessage("Problem");
+  exit(1);
+}
+try{
+  maximum_number = stoi(argv_two_maximum);
+}catch(const exception& e){
+  ErrorMessage("Problem");
+  exit(1);
+}
+  // Check to make sure minimum_number is less than maximum_number,
   // and that both of them are greater than zero. Otherwise, print an 
   // error message an exit.
-
+if(maximum_number <= minimum_number || minimum_number <= 0 || maximum_number <= 0){
+    ErrorMessage("the min and the max have to be a min max.");
+    exit(1);
+}    
   RandomNumberGenerator rng(minimum_number, maximum_number);
+  string answer = "y";
+while(answer == "y"){
   int secret_number = rng.next();
-  // cout << "Debugging: The secret number is " << secret_number << "\n";
+  cout << "Debugging: The secret number is " << secret_number << "\n";
   int guess = 0;
   int last_guess = 0;
-  string answer;
-
   NewGameMessage(minimum_number, maximum_number);
+  do{
+  guess = GatherGuess();
+  if(guess == secret_number){
+    cout << "\t Hooray! You guessed the secret number!!\n";
+    cout << "Do you want to play again? (y or n)>\n";
+    cin >> answer;
+  } else {
+    WarmerOrColder(guess,last_guess, secret_number);
+    last_guess = guess;
+    }
+  } while(guess != secret_number);
+}
+  
 
-  // TODO: Write a game loop which will prompt the player for their
+  // Write a game loop which will prompt the player for their
   // guess. When the guess is correct, prompt the user with:
   // "\tHooray! You guessed the secret number!!\n";
   // "Do you want to play again? (y or n)> ";
