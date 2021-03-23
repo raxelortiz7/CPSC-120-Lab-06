@@ -1,6 +1,22 @@
+// Raxel Ortiz
+// CPSC 120-05
+// 2021-03-18
+// raxelortiz7@csu.fullerton.edu
+// @raxelortiz7
+//
+// Lab 06-02
+//
+// This program finds the calculates the average of 10 random nums!
+//
 
-// TODO: Add the following header files algorithm, array, cstdlib,
+// Add the following header files algorithm, array, cstdlib,
 // iostream, random
+#include <algorithm>
+#include <array>
+#include <cstdlib>
+#include <iostream>
+#include <random> 
+#include <ostream>
 
 using namespace std;
 
@@ -74,6 +90,7 @@ const int number_elements = 10;
 /// error.
 void ErrorMessage(const string& message) {
   // TODO: implement ErrorMessage
+  cout << message << "\n";
 }
 
 /// PrintArray print out the elements of \p the_array each on a line of
@@ -100,9 +117,12 @@ void ErrorMessage(const string& message) {
 ///
 /// \param the_array This is the array of integers created in the main function.
 void PrintArray(const array<int, number_elements>& the_array) {
-  // TODO: Implement the function such that it prints out each element of
+  // Implement the function such that it prints out each element of
   // the given array, one element per line.
   // You must use a range-for loop.
+  for(const auto& element : the_array){
+    cout << element << "\n";
+  }
 }
 
 /// FillArray filles \p the_array with random numbers given by
@@ -117,9 +137,12 @@ void PrintArray(const array<int, number_elements>& the_array) {
 /// \sa RandomNumberGenerator::next()
 void FillArray(array<int, number_elements>& the_array,
                RandomNumberGenerator& random_number_generator) {
-  // TODO: assign a random number to each element in the array using
+  // assign a random number to each element in the array using
   // random_number_generator.next().
   // You must use a range-for loop
+  for(auto& element : the_array){
+    element = random_number_generator.next();
+  }
 }
 
 /// CalculateAverage calculates the average (arithmetic mean) of all the
@@ -138,7 +161,13 @@ void FillArray(array<int, number_elements>& the_array,
 ///
 /// \returns The average (arithmetic mean) value in the array as a float
 float CalculateAverage(const array<int, number_elements>& the_array) {
-  // TODO: Calculate the average of the values contained in the array
+  // Calculate the average of the values contained in the array
+  int sum = 0;
+  for(const auto& element : the_array){
+    sum += element;
+  }
+  float average = float(sum) / float(the_array.size());
+  return average;
 }
 
 /// Entry point to the find_min program
@@ -156,12 +185,27 @@ int main(int argc, char* argv[]) {
   string argv_two_maximum = string(argv[2]);
   int minimum_number = 0;
   int maximum_number = 0;
-  // TODO: convert argv_one_minimum and argv_two_maximum to integers and
+  // convert argv_one_minimum and argv_two_maximum to integers and
   // assign to minimum_number and maximum_number.
-
-  // TODO: Check to make sure minimum_number is less than maximum_number,
+try{
+  minimum_number = stoi(argv_one_minimum);
+}catch(const exception& e){
+  ErrorMessage("Problem");
+  exit(1);
+}
+try{
+  maximum_number = stoi(argv_two_maximum);
+}catch(const exception& e){
+  ErrorMessage("Problem");
+  exit(1);
+}
+  // Check to make sure minimum_number is less than maximum_number,
   // and that both of them are greater than zero. Otherwise, print an 
   // error message an exit.
+if(maximum_number <= minimum_number || minimum_number <= 0 || maximum_number <= 0){
+    ErrorMessage("the min and the max have to be a min max.");
+    exit(1);
+  }
 
   RandomNumberGenerator rng(minimum_number, maximum_number);
   array<int, number_elements> random_numbers{};

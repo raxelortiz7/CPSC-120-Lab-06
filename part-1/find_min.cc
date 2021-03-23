@@ -1,6 +1,22 @@
+// Raxel Ortiz
+// CPSC 120-05
+// 2021-03-18
+// raxelortiz7@csu.fullerton.edu
+// @raxelortiz7
+//
+// Lab 06-01
+//
+// This program finds the minimum!
+//
 
-// TODO: Add the following header files algorithm, array, cstdlib,
+// Add the following header files algorithm, array, cstdlib,
 // iostream, random
+#include <algorithm>
+#include <array>
+#include <cstdlib>
+#include <iostream>
+#include <random> 
+#include <ostream>
 
 using namespace std;
 
@@ -74,6 +90,8 @@ const int number_elements = 10;
 /// error.
 void ErrorMessage(const string& message) {
   // TODO: implement ErrorMessage
+  cout << message << "\n";
+
 }
 
 /// PrintArray print out the elements of \p the_array each on a line of
@@ -100,8 +118,16 @@ void ErrorMessage(const string& message) {
 ///
 /// \param the_array This is the array of integers created in the main function.
 void PrintArray(const array<int, number_elements>& the_array) {
-  // TODO: Implement the function such that it prints out each element of
+  // Implement the function such that it prints out each element of
   // the given array, one element per line.
+  for(int index = 0; index < the_array.size(); index++){
+  try{
+    cout << the_array.at(index) << "\n";
+  }catch(const exception& e){
+    ErrorMessage("something went wrong with printing the array.");
+    exit(1);
+    }
+  }
 }
 
 /// FillArray filles \p the_array with random numbers given by
@@ -116,10 +142,21 @@ void PrintArray(const array<int, number_elements>& the_array) {
 /// \sa RandomNumberGenerator::next()
 void FillArray(array<int, number_elements>& the_array,
                RandomNumberGenerator& random_number_generator) {
-  // TODO: assign a random number to each element in the array using
+  // assign a random number to each element in the array using
   // random_number_generator.next().
+  /*
+  for (int index = 0; index < the_array.size(); index++){
+  try{  
+    the_array.at(index) = random_number_generator.next();
+  }catch(const exception& e){
+    ErrorMessage("problem filling array");
+    exit(1);
+    }
+  }*/
+  for(auto& element : the_array){
+    element = random_number_generator.next();
+  }
 }
-
 /// FindMinimum walks through each location of \p the_array, finds the
 /// smallest value, and returns it.
 ///
@@ -136,6 +173,31 @@ void FillArray(array<int, number_elements>& the_array,
 /// \returns The minimum/smallest value in the array
 int FindMinimum(const array<int, number_elements>& the_array) {
   // TODO: Find the minimum value in the array.
+int min; 
+try{
+  min = the_array.at(0);
+}catch(const exception& e){
+  ErrorMessage("Trouble picking an element from array");
+  exit(1);
+}
+for(const auto& element : the_array){
+  if(element < min){
+    min = element;
+  }
+}
+/*for(int index = 1; index < the_array.size(); index++){
+int element = 0;
+try{
+  element = the_array.at(index);
+}catch(const exception& e){
+  ErrorMessage("Trouble picking an element from array");
+  exit(1);
+}   
+if(element < min){
+  min = element;
+}
+}*/
+return min;
 }
 
 /// Entry point to the find_min program
@@ -153,12 +215,28 @@ int main(int argc, char* argv[]) {
   string argv_two_maximum = string(argv[2]);
   int minimum_number = 0;
   int maximum_number = 0;
-  // TODO: convert argv_one_minimum and argv_two_maximum to integers and
+  // convert argv_one_minimum and argv_two_maximum to integers and
   // assign to minimum_number and maximum_number.
+try{
+  minimum_number = stoi(argv_one_minimum);
+}catch(const exception& e){
+  ErrorMessage("Problem");
+  exit(1);
+}
+try{
+  maximum_number = stoi(argv_two_maximum);
+}catch(const exception& e){
+  ErrorMessage("Problem");
+  exit(1);
+}
 
-  // TODO: Check to make sure minimum_number is less than maximum_number,
+  // Check to make sure minimum_number is less than maximum_number,
   // and that both of them are greater than zero. Otherwise, print an 
   // error message an exit.
+  if(maximum_number <= minimum_number || minimum_number <= 0 || maximum_number <= 0){
+    ErrorMessage("the min and the max have to be a min max.");
+    exit(1);
+  }
 
   RandomNumberGenerator rng(minimum_number, maximum_number);
   array<int, number_elements> random_numbers{};
